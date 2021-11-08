@@ -46,7 +46,7 @@ var savedWords = [];
     }
     return result;
 }
- function getRhymes(rel_rhy, callback) {
+function getRhymes(rel_rhy, callback) {
     fetch(`https://api.datamuse.com/words?${(new URLSearchParams({rel_rhy})).toString()}`)
         .then((response) => response.json())
         .then((data) => {
@@ -84,7 +84,8 @@ function getSynonyms(rel_syn, callback) {
 showRhymesButton.addEventListener('click', () =>{
     rhy_word = wordInput.value;
     var ul = document.createElement("ul");
-    // word_description.innerHTML = "";
+
+    word_description.innerHTML = "...loading";
     // word_description.innerHTML = "Words that rhyme with " + rhy_word;
 
     var completeDict = [];
@@ -103,7 +104,7 @@ showRhymesButton.addEventListener('click', () =>{
         var groupResults = groupBy(result, "numSyllables");
         console.log(groupResults);
 
-        word_description.innerHTML =" Words that rhyme with " + rhy_word;
+        //word_description.innerHTML =" Words that rhyme with " + rhy_word;
 
         if (groupResults == null){
             word_description.innerHTML = "";
@@ -171,6 +172,87 @@ showRhymesButton.addEventListener('click', () =>{
 
 document.getElementById('word_input').addEventListener("keypress", function(e){
     if (e.key == 'Enter') {
+        rhy_word = wordInput.value;
+    var ul = document.createElement("ul");
+
+    word_description.innerHTML = "...loading";
+    // word_description.innerHTML = "Words that rhyme with " + rhy_word;
+
+    var completeDict = [];
+
+   
+
+    getRhymes(rhy_word, (result) =>{
+        //console.log(result);
+
+        rhy_word = wordInput.value;
+        var ul = document.createElement("ul");
+        
+
+        
+        
+        var groupResults = groupBy(result, "numSyllables");
+        console.log(groupResults);
+
+        //word_description.innerHTML =" Words that rhyme with " + rhy_word;
+
+        if (groupResults == null){
+            word_description.innerHTML = "";
+            word_description.innerHTML = "No Results"
+;       }
+        else{
+            word_description.innerHTML =" Words that rhyme with " + rhy_word;
+        }
+        
+        
+        //console.log(groupResults[1]);
+        var check = 0;
+        rhymesOutput.innerHTML = '';
+        for (const key1 in groupResults){
+            //console.log(groupResults[key1]);
+            
+            if (check == 0){
+                //console.log("one")
+                let newHeader = document.createElement('h3');
+                newHeader.textContent = (groupResults[key1][key1]['numSyllables'] ) + " syllable:";
+                rhymesOutput.append(newHeader);
+                check = 1;
+            }
+            else{
+                
+                let newHeader = document.createElement('h3');
+                newHeader.textContent = (key1) + " syllables:";
+                rhymesOutput.append(newHeader);
+                //console.log(key1);
+            }
+            for (const key2 in groupResults[key1]){
+
+                const wordict = groupResults[key1][key2];
+                const newWord = wordict['word'];
+
+                const newlist = document.createElement('li');
+                //ul.appendChild(newlist);
+                newlist.classList.add('li');
+                newlist.textContent = newWord;
+                rhymesOutput.append(newlist);
+
+
+                var saveButton = document.createElement('button');
+                saveButton.classList.add("btn");
+                saveButton.classList.add("btn-sm");
+                saveButton.classList.add('done');
+                saveButton.setAttribute("type", "button");
+                saveButton.textContent = '(Save)';
+                newlist.append(saveButton);
+
+                saveButton.addEventListener("click", function(){
+                    savedWords.push(newWord);
+                nowSaved.innerHTML = savedWords.join(', ')
+             });
+            }
+        }
+        
+    });
         console.log('working');
         }
     });
