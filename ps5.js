@@ -123,7 +123,7 @@ showRhymesButton.addEventListener('click', () =>{
             if (check == 0){
                 //console.log("one")
                 let newHeader = document.createElement('h3');
-                newHeader.textContent = (groupResults[key1][key1]['numSyllables'] ) + " syllable";
+                newHeader.textContent = (groupResults[key1][key1]['numSyllables'] ) + " syllable:";
                 rhymesOutput.append(newHeader);
                 check = 1;
             }
